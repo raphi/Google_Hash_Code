@@ -185,8 +185,7 @@ class HashCode(object):
 
 			if score_diff > 0:
 				self.apply_mutation(mutation)
-
-			max_score = max_score + score_diff
+				max_score = max_score + score_diff
 
 		self.score = max_score
 
