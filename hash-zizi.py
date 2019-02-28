@@ -40,9 +40,13 @@ class HashCode(object):
 		self.slideshow = []
 
 	def print(self):
-		logging.debug('print')
-		# TODO
-		pass
+		file_out_name = '{}-{}.out'.format(self.file, self.score)
+		with open(file_out_name, 'w') as fout:
+			fout.write(str(len(self.slideshow)))
+			fout.write('\n')
+			for slide in self.slideshow:
+				fout.write(' '.join([str(photo.id) for photo in slide.photos]))
+				fout.write('\n')
 
 	def apply_mutation(self, mutation):
 		if mutation.type == 'slide':
@@ -184,9 +188,11 @@ class HashCode(object):
 
 			max_score = max_score + score_diff
 
-		print(len(self.slideshow))
-		for slide in self.slideshow:
-			print(' '.join([str(photo.id) for photo in slide.photos]))
+		self.score = max_score
+
+		# print(len(self.slideshow))
+		# for slide in self.slideshow:
+		# 	print(' '.join([str(photo.id) for photo in slide.photos]))
 
 		
 
@@ -250,6 +256,8 @@ def run_extract():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-v", "--verbosity", help="increase output verbosity", choices = LOG_VERBOSITY)
 	parser.add_argument("-i", "--input", required=True, help="input file")
+	parser.add_argument("--iteration", type=int, default=10, help="input file")
+
 	args = parser.parse_args()
 
 	# configure logging
@@ -257,7 +265,7 @@ def run_extract():
 
 	plop = HashCode(args.input)
 	plop.parse()
-	plop.process()
+	plop.process(args.iteration)
 	plop.print()
 
 if __name__ == '__main__':
