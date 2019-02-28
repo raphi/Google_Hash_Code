@@ -34,9 +34,14 @@ class HashCode(object):
 		self.slideshow = []
 
 	def print(self):
-		logging.debug('print')
-		# TODO
-		pass
+		file_out_name = '{}-{}.out'.format(self.file, self.score)
+		with open(file_out_name, 'w') as fout:
+			fout.write(str(len(self.slideshow)))
+			fout.write('\n')
+			for slide in self.slideshow:
+				fout.write(' '.join([str(photo.id) for photo in slide.photos]))
+				fout.write('\n')
+
 
 	def mutate(self):
 		photo1_idx = random.randint(0, len(self.collection) -1)
@@ -140,11 +145,9 @@ class HashCode(object):
 		# logging.info('\n'.join([str(x) for x in self.slideshow]))
 		# logging.info('==================> {}'.format(max_score))
 
-		print(len(self.slideshow))
-		for slide in self.slideshow:
-			print(' '.join([str(photo.id) for photo in slide.photos]))
+		self.score = max_score
+		logging.info('Having a score of : {}'.format(max_score))
 
-		
 
 	def parse(self):
 		with open(self.file, 'r') as input_file:
@@ -206,6 +209,7 @@ def run_extract():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-v", "--verbosity", help="increase output verbosity", choices = LOG_VERBOSITY)
 	parser.add_argument("-i", "--input", required=True, help="input file")
+	parser.add_argument("--iteration", type=int, default=10, help="input file")
 	args = parser.parse_args()
 
 	# configure logging
@@ -213,7 +217,7 @@ def run_extract():
 
 	plop = HashCode(args.input)
 	plop.parse()
-	plop.process()
+	plop.process(iteration=args.iteration)
 	plop.print()
 
 if __name__ == '__main__':
