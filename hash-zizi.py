@@ -156,18 +156,38 @@ class HashCode(object):
 	def process(self, iteration, depth):
 		logging.debug('Collection has {} photos'.format(len(self.collection)))
 
-		curr_vert = None
+		vert_sorted = sorted(self.vert_photos, key=lambda p: len(p.tags))
+		horizontals = [photo for photo in self.collection if photo.is_horizontal]
+
+		h_idx = 0
+		v_idx = 0
 		slide_id = 0
-		for photo in self.collection:
-			if photo.is_horizontal:
-				self.slideshow.append(Slide(slide_id, [photo]))
+		for i in range(len(self.collection)):
+			r = random.randint(0, 2)
+			if r == 0 and h_idx < len(horizontals):
+				self.slideshow.append(Slide(slide_id, [horizontals[h_idx]]))
 				slide_id += 1
-			elif curr_vert:
-				self.slideshow.append(Slide(slide_id, [photo, curr_vert]))
-				slide_id += 1
-				curr_vert = None
+				h_idx += 1
 			else:
-				curr_vert = photo
+				if (v_idx >= len(vert_sorted) - 1 - v_idx):
+					continue
+				self.slideshow.append(Slide(slide_id, [vert_sorted[v_idx], vert_sorted[len(vert_sorted) - 1 - v_idx]]))
+				slide_id += 1
+				v_idx += 1
+
+
+		# curr_vert = None
+		# slide_id = 0
+		# for photo in self.collection:
+		# 	if photo.is_horizontal:
+		# 		self.slideshow.append(Slide(slide_id, [photo]))
+		# 		slide_id += 1
+		# 	elif curr_vert:
+		# 		self.slideshow.append(Slide(slide_id, [photo, curr_vert]))
+		# 		slide_id += 1
+		# 		curr_vert = None
+		# 	else:
+		# 		curr_vert = photo
 
 		logging.debug('\n'.join([str(x) for x in self.slideshow]))
 
