@@ -153,7 +153,7 @@ class HashCode(object):
 
 		return score
 
-	def process(self, iteration=1000):
+	def process(self, iteration, depth):
 		logging.debug('Collection has {} photos'.format(len(self.collection)))
 
 		curr_vert = None
@@ -255,7 +255,8 @@ def run_extract():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-v", "--verbosity", help="increase output verbosity", choices = LOG_VERBOSITY)
 	parser.add_argument("-i", "--input", required=True, help="input file")
-	parser.add_argument("--iteration", type=int, default=10, help="input file")
+	parser.add_argument("--iteration", type=int, default=10, help="number of iteration")
+	parser.add_argument("--depth", type=int, default=1, help="number of mutation before revert")
 
 	args = parser.parse_args()
 
@@ -264,7 +265,7 @@ def run_extract():
 
 	plop = HashCode(args.input)
 	plop.parse()
-	plop.process(args.iteration)
+	plop.process(args.iteration, args.depth)
 	plop.print()
 
 if __name__ == '__main__':
